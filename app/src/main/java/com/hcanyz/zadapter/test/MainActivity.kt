@@ -16,6 +16,10 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, TestZAdapterActivity::class.java))
     }
 
+    fun testZListAdapterActivity(view: View) {
+        startActivity(Intent(this, TestZListAdapterActivity::class.java))
+    }
+
     fun testZAdapterInOtherLayoutActivity(view: View) {
         startActivity(Intent(this, TestZAdapterInOtherLayoutActivity::class.java))
     }

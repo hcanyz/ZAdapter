@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.hcanyz.zadapter.test.TestZAdapterActivity" />
+        <activity android:name="com.hcanyz.zadapter.test.TestZListAdapterActivity" />
         <activity android:name="com.hcanyz.zadapter.test.TestZAdapterInOtherLayoutActivity" />
         <activity android:name="com.hcanyz.zadapter.test.TestZAdapterThrottleActivity" />
     </application>

@@ -5,17 +5,19 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
-import com.hcanyz.zadapter.ZAdapter
+import androidx.recyclerview.widget.DiffUtil
+import com.hcanyz.zadapter.ZListAdapter
 import com.hcanyz.zadapter.helper.bindZAdapter
 import com.hcanyz.zadapter.hodler.ViewHolderHelper
 import com.hcanyz.zadapter.hodler.ZViewHolder
 import com.hcanyz.zadapter.registry.IHolderCreatorName
 import kotlinx.android.synthetic.main.activity_test_zadapter.*
+import kotlin.random.Random
 
-class TestZAdapterActivity : AppCompatActivity() {
+class TestZListAdapterActivity : AppCompatActivity() {
 
     companion object {
-        const val TAG = "testZAdapter"
+        const val TAG = "TestZListAdapter"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,35 +34,67 @@ class TestZAdapterActivity : AppCompatActivity() {
         //MultiData2 + R.layout.holder_multi_1
         repeat(7) { listOf.add(MultiData2(R.mipmap.ic_launcher, "MultiData2_$it")) }
 
-        val zAdapter = ZAdapter(listOf, ViewHolderHelper(fragmentActivity = this))
+        val zListAdapter = ZListAdapter(object : DiffUtil.ItemCallback<IHolderCreatorName>() {
+            override fun areItemsTheSame(oldItem: IHolderCreatorName, newItem: IHolderCreatorName): Boolean {
+                if (oldItem is SimpleData && newItem is SimpleData) {
+                    return oldItem.key == newItem.key
+                }
+                if (oldItem is MultiData && newItem is MultiData) {
+                    return oldItem.text == newItem.text
+                }
+                if (oldItem is MultiData2 && newItem is MultiData2) {
+                    return oldItem.data2Text == newItem.data2Text
+                }
+                return false
+            }
+
+            override fun areContentsTheSame(oldItem: IHolderCreatorName, newItem: IHolderCreatorName): Boolean {
+                if (oldItem is SimpleData && newItem is SimpleData) {
+                    return oldItem.key == newItem.key
+                }
+                if (oldItem is MultiData && newItem is MultiData) {
+                    return oldItem.text == newItem.text
+                }
+                if (oldItem is MultiData2 && newItem is MultiData2) {
+                    return oldItem.data2Text == newItem.data2Text
+                }
+                return false
+            }
+        }, ViewHolderHelper(fragmentActivity = this))
         //registry SimpleData + R.layout.holder_simple > SimpleHolder
-        zAdapter.registry.registered(SimpleData::class.java.name) { parent ->
+        zListAdapter.registry.registered(SimpleData::class.java.name) { parent ->
             val testHolder = SimpleHolder(parent)
             testHolder.lifecycle.addObserver(LifecycleObserverTest())
             return@registered testHolder
         }
         //registry MultiData + R.layout.holder_multi_1 > MultiHolder
-        zAdapter.registry.registered(MultiData::class.java.name) { parent ->
+        zListAdapter.registry.registered(MultiData::class.java.name) { parent ->
             val multiHolder = MultiHolder(parent, R.layout.holder_multi_1)
             multiHolder.lifecycle.addObserver(LifecycleObserverTest())
             return@registered multiHolder
         }
         //registry MultiData + R.layout.holder_multi_2 > MultiHolder
-        zAdapter.registry.registered("${MultiData::class.java.name}_${R.layout.holder_multi_2}") { parent ->
+        zListAdapter.registry.registered("${MultiData::class.java.name}_${R.layout.holder_multi_2}") { parent ->
             val multiHolder = MultiHolder(parent, R.layout.holder_multi_2)
             multiHolder.lifecycle.addObserver(LifecycleObserverTest())
             return@registered multiHolder
         }
-        recylerview.bindZAdapter(zAdapter)
+        recylerview.bindZAdapter(zListAdapter)
+
+        zListAdapter.submitList(listOf)
 
         //listen clickEvent
         ViewModelProviders.of(this).get(EventViewModel::class.java).clickEvent.observe(this, Observer {
             when (it) {
                 is MultiData -> {
                     Toast.makeText(this, "click -> $it", Toast.LENGTH_SHORT).show()
+                    repeat(7) { index -> listOf.add(MultiData2(R.mipmap.ic_launcher, "MultiData2_${index}_${Random.nextInt(1000)}")) }
+                    zListAdapter.submitList(ArrayList(listOf))
                 }
                 is MultiData2 -> {
                     Toast.makeText(this, "click -> $it", Toast.LENGTH_SHORT).show()
+                    repeat(7) { index -> listOf.removeAt(index) }
+                    zListAdapter.submitList(ArrayList(listOf))
                 }
             }
         })

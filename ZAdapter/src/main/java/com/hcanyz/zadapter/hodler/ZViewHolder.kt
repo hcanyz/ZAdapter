@@ -10,8 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import com.hcanyz.zadapter.ZAdapter
-import com.hcanyz.zadapter.registry.IHolderCreatorName
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * @author hcanyz
@@ -49,7 +48,7 @@ open class ZViewHolder<DATA : Any> internal constructor(protected val mContext: 
     //用于传递事件源和其他消息
     var mViewHolderHelper: ViewHolderHelper? = null
 
-    internal lateinit var zAdapter: ZAdapter<out IHolderCreatorName>
+    lateinit var zAdapter: RecyclerView.Adapter<ZRecyclerViewHolder<DATA>>
 
     private var mLifecycleRegistry: LifecycleRegistry
 

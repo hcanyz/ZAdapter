@@ -16,6 +16,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="testZListAdapterActivity"
+        android:text="TestZListAdapterActivity"
+        android:textAllCaps="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:onClick="testZAdapterInOtherLayoutActivity"
         android:text="TestZAdapterInOtherLayoutActivity"
         android:textAllCaps="false" />

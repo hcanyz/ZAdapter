@@ -5,10 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hcanyz.zadapter.ZAdapter
-import com.hcanyz.zadapter.registry.IHolderCreatorName
+import com.hcanyz.zadapter.hodler.ZRecyclerViewHolder
 import com.hcanyz.zadapter.hodler.ZViewHolder
+import com.hcanyz.zadapter.registry.IHolderCreatorName
 
-fun RecyclerView.bindZAdapter(zAdapter: ZAdapter<*>) {
+fun RecyclerView.bindZAdapter(zAdapter: RecyclerView.Adapter<out ZRecyclerViewHolder<*>>) {
     layoutManager = LinearLayoutManager(context)
     adapter = zAdapter
 }
