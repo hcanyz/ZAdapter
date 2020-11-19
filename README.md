@@ -41,7 +41,7 @@ allprojects {
 }
 //要使用的模块添加:
 dependencies {
-    implementation 'com.github.hcanyz.ZAdapter:ZAdapter:1.0.1'
+    implementation 'com.github.hcanyz.ZAdapter:ZAdapter:${version}'
 }
 ```
 
@@ -71,7 +71,7 @@ val zAdapter = ZAdapter<SimpleData>(listOf, ViewHolderHelper(fragmentActivity = 
 val zAdapter = ZAdapter<SimpleData>()
 //init listOf
 val listOf = arrayListOf<SimpleData>()
-zAdapter.mDatas = listOf
+zAdapter.datas = listOf
 ```
 
 4. 注册Creator,绑定RecyclerView
@@ -82,6 +82,16 @@ zAdapter.mDatas = listOf
 zAdapter.registry.registered(SimpleData::class.java.name) { parent ->
     return@registered SimpleHolder(parent)
 }
+//若bean没有实现holderCreatorName，可以通过注册选择器，协助zAdapter寻找CreatorName
+zAdapter.registry.registered { position -> 
+    if (position < 10) String::class.java.canonicalName else null 
+}
+zAdapter.registry.registered(String::class.java.name) { parent: ViewGroup ->
+    return@registered object : ZViewHolder<String>(parent.context, TextView(parent.context)) {
+        ...
+    }
+}
+
 recylerview.layoutManager = LinearLayoutManager(context)
 recylerview.adapter = zAdapter
 ```
