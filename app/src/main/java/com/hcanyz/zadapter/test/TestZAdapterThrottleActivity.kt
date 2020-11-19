@@ -57,7 +57,7 @@ class TestZAdapterThrottleActivity : AppCompatActivity() {
             return@registered MultiHolder(parent, R.layout.holder_multi_2)
         }
         zAdapter.openThrottle(1000)
-        zAdapter.mDatas = listOf
+        zAdapter.datas = listOf
         recylerview.bindZAdapter(zAdapter)
 
         //listen clickEvent
@@ -75,7 +75,7 @@ class TestZAdapterThrottleActivity : AppCompatActivity() {
         val subscribe = Observable.interval(10, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    for (mData in zAdapter.mDatas) {
+                    for (mData in zAdapter.datas) {
                         if (mData is SimpleData) {
                             if (mData.key.isNotEmpty()) {
                                 mData.key = mData.key.replaceRange(mData.key.length - 1, mData.key.length, Random.nextInt(9).toString())

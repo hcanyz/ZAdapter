@@ -14,7 +14,7 @@ fun RecyclerView.bindZAdapter(zAdapter: RecyclerView.Adapter<out ZRecyclerViewHo
     adapter = zAdapter
 }
 
-fun <DATA : IHolderCreatorName> ViewGroup.injectViewWithAdapter(adapter: ZAdapter<DATA>, startInjectPosition: Int = 0, iInjectHook: IInjectHook? = null) {
+fun <DATA : Any> ViewGroup.injectViewWithAdapter(adapter: ZAdapter<DATA>, startInjectPosition: Int = 0, iInjectHook: IInjectHook? = null) {
     // 取消之前的注册。防止多次刷新
     (tag as? RecyclerView.AdapterDataObserver)?.let {
         adapter.unregisterAdapterDataObserver(it)
@@ -31,7 +31,7 @@ fun <DATA : IHolderCreatorName> ViewGroup.injectViewWithAdapter(adapter: ZAdapte
     tag = value
 }
 
-private fun <DATA : IHolderCreatorName> ViewGroup.onChanged(adapter: ZAdapter<DATA>, startInjectPosition: Int, iInjectHook: IInjectHook?) {
+private fun <DATA : Any> ViewGroup.onChanged(adapter: ZAdapter<DATA>, startInjectPosition: Int, iInjectHook: IInjectHook?) {
     //初始化容器中每个view
     val itemCount = adapter.itemCount
     for (position in startInjectPosition until itemCount) {
@@ -44,29 +44,38 @@ private fun <DATA : IHolderCreatorName> ViewGroup.onChanged(adapter: ZAdapter<DA
             if (childAt.tag !is ZViewHolder<*>) {
                 throw IllegalStateException("tag error")
             }
-            if (((childAt.tag as? ZViewHolder<*>)?.mData as? IHolderCreatorName)?.holderCreatorName() != adapter.mDatas[position].holderCreatorName()) {
-                createHolder7hook(adapter, position, iInjectHook)
+            @Suppress("UNCHECKED_CAST")
+            val zViewHolder = childAt.tag as? ZViewHolder<DATA>
+            val oldItemData = zViewHolder?.mData
+            val newItemData = adapter.datas[position]
+            if (oldItemData != null && oldItemData is IHolderCreatorName && newItemData is IHolderCreatorName
+                    && oldItemData.holderCreatorName() == newItemData.holderCreatorName()) {
+                //3. 给每个holder刷新数据
+                adapter.onBindViewHolder(zViewHolder.recyclerViewHolder, position)
+                continue
+            } else if (oldItemData === newItemData) {
+                //3. 给每个holder刷新数据
+                adapter.onBindViewHolder(zViewHolder.recyclerViewHolder, position)
+                continue
             }
+            createHolder7hook(adapter, position, iInjectHook)
         }
     }
     //3. 删除多余view
     if (childCount > itemCount && childCount > startInjectPosition) {
         removeViewsInLayout(itemCount, childCount - itemCount)
     }
-    //4. 给每个holder刷新数据
-    for (position in startInjectPosition until childCount) {
-        @Suppress("UNCHECKED_CAST")
-        (getChildAt(position).tag as? ZViewHolder<Any>)?.let {
-            adapter.onBindViewHolder((it as ZViewHolder<DATA>).recyclerViewHolder, position)
-        }
-    }
 }
 
-private fun <DATA : IHolderCreatorName> ViewGroup.createHolder7hook(adapter: ZAdapter<DATA>, position: Int, iInjectHook: IInjectHook?) {
-    val findViewType = adapter.registry.findViewTypeByCreatorName(adapter.mDatas[position].holderCreatorName())
-    val holder = adapter.registry.createHolderByHolderBean<DATA>(findViewType, this, adapter.mViewHolderHelper)
+private fun <DATA : Any> ViewGroup.createHolder7hook(adapter: ZAdapter<DATA>, position: Int, iInjectHook: IInjectHook?) {
+    val findViewType = adapter.registry.findItemTypeByPosition(adapter.datas, position)
+    val holder = adapter.registry.createHolderByHolderBean<DATA>(findViewType, this, adapter.viewHolderHelper)
     val view = holder.rootView()
     iInjectHook?.hookViewCreated(holder, view, position)
+
+    //3. 给每个holder刷新数据
+    adapter.onBindViewHolder(holder.recyclerViewHolder, position)
+
     addView(view, position)
     view.tag = holder
 }

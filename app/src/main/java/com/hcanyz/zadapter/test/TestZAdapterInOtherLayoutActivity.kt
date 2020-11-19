@@ -2,6 +2,8 @@ package com.hcanyz.zadapter.test
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
@@ -9,7 +11,6 @@ import com.hcanyz.zadapter.ZAdapter
 import com.hcanyz.zadapter.helper.injectViewWithAdapter
 import com.hcanyz.zadapter.hodler.ViewHolderHelper
 import com.hcanyz.zadapter.hodler.ZViewHolder
-import com.hcanyz.zadapter.registry.IHolderCreatorName
 import kotlinx.android.synthetic.main.activity_test_zadapter_other_layout.*
 
 class TestZAdapterInOtherLayoutActivity : AppCompatActivity() {
@@ -22,7 +23,9 @@ class TestZAdapterInOtherLayoutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test_zadapter_other_layout)
 
-        val listOf = arrayListOf<IHolderCreatorName>()
+        val listOf = arrayListOf<Any>()
+        // String
+        repeat(10) { listOf.add("$it") }
         //simple
         repeat(2) { listOf.add(SimpleData(R.mipmap.ic_launcher, "SimpleData_$it")) }
         //MultiData + R.layout.holder_multi_1
@@ -30,9 +33,21 @@ class TestZAdapterInOtherLayoutActivity : AppCompatActivity() {
         //MultiData + R.layout.holder_multi_2
         repeat(7) { listOf.add(MultiData(R.mipmap.ic_launcher_round, "", true)) }
         //MultiData2 + R.layout.holder_multi_1
-        repeat(7) { listOf.add(MultiData2(R.mipmap.ic_launcher, "MultiData2_$it")) }
+        repeat(70) { listOf.add(MultiData2(R.mipmap.ic_launcher, "MultiData2_$it")) }
 
         val zAdapter = ZAdapter(listOf, ViewHolderHelper(fragmentActivity = this))
+
+        // registry data not implements IHolderCreatorName
+        zAdapter.registry.registered { position -> if (position < 10) String::class.java.canonicalName else null }
+        zAdapter.registry.registered(String::class.java.name) { parent: ViewGroup ->
+            return@registered object : ZViewHolder<String>(parent.context, TextView(parent.context)) {
+                override fun update(data: String, payloads: List<Any>) {
+                    super.update(data, payloads)
+                    (rootView() as TextView).text = data
+                }
+            }
+        }
+
         //registry SimpleData + R.layout.holder_simple > SimpleHolder
         zAdapter.registry.registered(SimpleData::class.java.name) { parent ->
             val testHolder = SimpleHolder(parent)
@@ -55,6 +70,7 @@ class TestZAdapterInOtherLayoutActivity : AppCompatActivity() {
 
         //listen clickEvent
         ViewModelProviders.of(this).get(EventViewModel::class.java).clickEvent.observe(this, Observer {
+            zAdapter.notifyDataSetChanged()
             when (it) {
                 is MultiData -> {
                     Toast.makeText(this, "click -> $it", Toast.LENGTH_SHORT).show()

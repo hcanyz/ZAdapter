@@ -32,7 +32,7 @@ class TestZListAdapterActivity : AppCompatActivity() {
         //MultiData + R.layout.holder_multi_2
         repeat(7) { listOf.add(MultiData(R.mipmap.ic_launcher_round, "multiData_$it", true)) }
         //MultiData2 + R.layout.holder_multi_1
-        repeat(7) { listOf.add(MultiData2(R.mipmap.ic_launcher, "MultiData2_$it")) }
+        repeat(70) { listOf.add(MultiData2(R.mipmap.ic_launcher, "MultiData2_$it")) }
 
         val zListAdapter = ZListAdapter(object : DiffUtil.ItemCallback<IHolderCreatorName>() {
             override fun areItemsTheSame(oldItem: IHolderCreatorName, newItem: IHolderCreatorName): Boolean {

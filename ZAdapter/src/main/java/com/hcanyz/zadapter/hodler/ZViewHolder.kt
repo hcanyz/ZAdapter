@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
  *
  * 需要依赖 kapt deps.android.lifecycleCompiler ，自动生成 xxx_LifecycleObserverTest_LifecycleAdapter
  */
-open class ZViewHolder<DATA : Any> internal constructor(protected val mContext: Context, private val mRootView: View) : LifecycleOwner {
+open class ZViewHolder<DATA : Any> constructor(protected val mContext: Context, private val mRootView: View) : LifecycleOwner {
 
     constructor(context: Context, @LayoutRes layoutId: Int) : this(context, View.inflate(context, layoutId, null))
 

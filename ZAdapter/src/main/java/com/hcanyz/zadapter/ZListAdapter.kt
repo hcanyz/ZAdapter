@@ -8,10 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import com.hcanyz.zadapter.hodler.ViewHolderHelper
 import com.hcanyz.zadapter.hodler.ZRecyclerViewHolder
 import com.hcanyz.zadapter.registry.HolderTypeResolverRegistry
-import com.hcanyz.zadapter.registry.IHolderCreatorName
 import java.util.*
 
-class ZListAdapter<DATA : IHolderCreatorName> : ListAdapter<DATA, ZRecyclerViewHolder<DATA>> {
+class ZListAdapter<DATA : Any> : ListAdapter<DATA, ZRecyclerViewHolder<DATA>> {
 
     constructor(diffCallback: DiffUtil.ItemCallback<DATA>, mViewHolderHelper: ViewHolderHelper? = null) : super(diffCallback) {
         this.mViewHolderHelper = mViewHolderHelper
@@ -38,7 +37,7 @@ class ZListAdapter<DATA : IHolderCreatorName> : ListAdapter<DATA, ZRecyclerViewH
     }
 
     override fun getItemViewType(position: Int): Int {
-        return registry.findViewTypeByCreatorName(currentList[position].holderCreatorName())
+        return registry.findItemTypeByPosition(currentList, position)
     }
 
     override fun getItemCount(): Int {
