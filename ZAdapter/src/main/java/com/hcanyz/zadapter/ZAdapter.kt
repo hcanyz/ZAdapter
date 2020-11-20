@@ -21,7 +21,7 @@ open class ZAdapter<DATA : Any>(var datas: MutableList<DATA> = arrayListOf(),
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ZRecyclerViewHolder<DATA> {
         val holder = registry.createHolderByHolderBean<DATA>(viewType, parent, viewHolderHelper)
-        holder.initTask
+        holder.init()
         holder.zAdapter = this
         holder.getLifecycleRegistry().handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         return holder.recyclerViewHolder

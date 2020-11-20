@@ -12,11 +12,8 @@ data class SimpleData(val iconId: Int, var key: String) : IHolderCreatorName
 
 class SimpleHolder(parent: ViewGroup, layoutId: Int = R.layout.holder_simple) : ZViewHolder<SimpleData>(parent, layoutId) {
 
-    private lateinit var iv_test: ImageView
-
-    override fun initView(rootView: View) {
-        super.initView(rootView)
-        iv_test = rootView.findViewById(R.id.iv_test)
+    private val iv_test by lazy {
+        fv<ImageView>(R.id.iv_test)
     }
 
     override fun initListener(rootView: View) {

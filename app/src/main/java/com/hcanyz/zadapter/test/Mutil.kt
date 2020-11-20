@@ -35,14 +35,8 @@ data class MultiData2(val data2IconId: Int, val data2Text: String) : IMulti {
 
 class MultiHolder(parent: ViewGroup, layoutId: Int = R.layout.holder_multi_1) : ZViewHolder<IMulti>(parent, layoutId) {
 
-    private lateinit var iv_test: ImageView
-    private var tv_test: TextView? = null
-
-    override fun initView(rootView: View) {
-        super.initView(rootView)
-        iv_test = rootView.findViewById(R.id.iv_test)
-        tv_test = rootView.findViewById(R.id.tv_test)
-    }
+    private val iv_test by lazy { fv<ImageView>(R.id.iv_test) }
+    private val tv_test by lazy { fvNullable<TextView>(R.id.tv_test) }
 
     override fun initListener(rootView: View) {
         super.initListener(rootView)

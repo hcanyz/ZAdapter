@@ -30,7 +30,7 @@ class ZListAdapter<DATA : Any> : ListAdapter<DATA, ZRecyclerViewHolder<DATA>> {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ZRecyclerViewHolder<DATA> {
         val holder = registry.createHolderByHolderBean<DATA>(viewType, parent, mViewHolderHelper)
-        holder.initTask
+        holder.init()
         holder.zAdapter = this
         holder.getLifecycleRegistry().handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         return holder.recyclerViewHolder

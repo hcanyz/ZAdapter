@@ -55,7 +55,7 @@ class SimpleHolder(parent: ViewGroup) :
     ZViewHolder<SimpleData>(parent, R.layout.holder_item_fixed) {
     override fun update(data: SimpleData, payloads: List<Any>) {
         super.update(data, payloads)
-        findViewById<TextView>(R.id.tv_1).text = data.test
+        fv<TextView>(R.id.tv_1).text = data.test
     }
 }
 ```
