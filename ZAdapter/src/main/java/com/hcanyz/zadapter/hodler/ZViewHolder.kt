@@ -60,7 +60,7 @@ open class ZViewHolder<DATA : Any> : LifecycleOwner, View.OnAttachStateChangeLis
     //用于传递事件源和其他消息
     var mViewHolderHelper: ViewHolderHelper? = null
 
-    lateinit var zAdapter: RecyclerView.Adapter<ZRecyclerViewHolder<DATA>>
+    lateinit var zAdapter: RecyclerView.Adapter<out ZRecyclerViewHolder<out Any>>
 
     private var mLifecycleRegistry: LifecycleRegistry
 
