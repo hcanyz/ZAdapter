@@ -16,7 +16,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(':ZAdapter')
+    api project(':ZAdapter')
 
     compileOnly deps.android.recyclerview
 
