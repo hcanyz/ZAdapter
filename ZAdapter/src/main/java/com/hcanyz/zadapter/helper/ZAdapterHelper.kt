@@ -9,9 +9,9 @@ import com.hcanyz.zadapter.hodler.ZRecyclerViewHolder
 import com.hcanyz.zadapter.hodler.ZViewHolder
 import com.hcanyz.zadapter.registry.IHolderCreatorName
 
-fun RecyclerView.bindZAdapter(zAdapter: RecyclerView.Adapter<out ZRecyclerViewHolder<*>>) {
-    layoutManager = LinearLayoutManager(context)
-    adapter = zAdapter
+fun RecyclerView.bindZAdapter(zAdapter: RecyclerView.Adapter<out ZRecyclerViewHolder<*>>, layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)) {
+    this.layoutManager = layoutManager
+    this.adapter = zAdapter
 }
 
 fun <DATA : Any> ViewGroup.injectViewWithAdapter(adapter: ZAdapter<DATA>, startInjectPosition: Int = 0, iInjectHook: IInjectHook? = null) {

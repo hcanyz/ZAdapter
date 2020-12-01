@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import com.hcanyz.zadapter.hodler.ViewHolderHelper
 import com.hcanyz.zadapter.hodler.ZRecyclerViewHolder
 import com.hcanyz.zadapter.registry.HolderTypeResolverRegistry
-import java.util.*
 
 class ZListAdapter<DATA : Any> : ListAdapter<DATA, ZRecyclerViewHolder<DATA>> {
 
@@ -23,8 +22,6 @@ class ZListAdapter<DATA : Any> : ListAdapter<DATA, ZRecyclerViewHolder<DATA>> {
     private val mViewHolderHelper: ViewHolderHelper?
 
     val registry by lazy { HolderTypeResolverRegistry() }
-
-    val adapterUUID: String by lazy { UUID.randomUUID().toString() }
 
     var showItemCount = -1
 
